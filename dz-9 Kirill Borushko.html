@@ -1,0 +1,117 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+ 	<meta charset="UTF-8">
+ 	<title>Lesson 9</title>
+ 	<link rel="stylesheet" href="style.css">
+ 	<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+ </head>
+ <body>
+ 	<div class="container">
+ 		<div class="main">
+ 			<div class="location_time">
+ 				<h3></h3>
+ 				<p></p>
+ 			</div>
+ 			<div class="weather_today">
+	 			<span></span>
+	 			<span></span>
+ 			</div>
+ 			<div class="wind">
+ 				<span></span>
+ 				<span></span>
+ 			</div>
+ 		</div>
+ 		<div class="all_notes">
+ 		</div>
+ 	</div>
+ 
+ 	<script>
+	var h3 = document.getElementById('city');
+
+	var monthNames = {
+		1: 'Jan',
+		2: 'Feb',
+		3: 'Mar',
+		4: 'Apr',
+		5: 'May',
+		6: 'Jun',
+		7: 'Jul',
+		8: 'Aug',
+		9: 'Sep',
+		10: 'Oct',
+		11: 'Nov',
+		12: 'Dec'
+	};
+
+	function getWeather(wUrl) {
+		var req = new XMLHttpRequest();
+		req.onload = function(){
+			var resp = req.response;
+			showWeatherDays(resp.list);
+			makeWeatherTodayLayout(resp);
+		}
+		req.open("GET", wUrl, true);
+		req.responseType = "json";
+		req.send();
+	}
+	var cityName = prompt("Enter city name!", "");
+
+	var weatherUrl = `http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&APPID=9b16205ba2ba12608f469eb747fc788a`;
+
+	function makeWeatherDayLayout(date, icon, temperature) {
+		var div = document.createElement("div");
+		div.setAttribute("class", "each_note");
+		var dateElement = document.createElement("span");
+		dateElement.textContent = date;
+		div.appendChild(dateElement);
+		var iconElement = document.createElement("img");
+		iconElement.setAttribute("src", "icons/" + icon + ".png");
+		div.appendChild(iconElement);
+		var tempElement = document.createElement("span");
+		tempElement.innerHTML = Math.round(temperature) + "℃";
+		div.appendChild(tempElement);
+		return div;
+	}
+
+	function showWeatherDays(arr) {
+		var div = document.querySelector(".all_notes");
+		for(var i = 0; i < arr.length; i += 8) {
+			var dateOfDay = new Date(arr[i].dt_txt);
+			var formatedDateOfDay = dateOfDay.getDate() + " " +  monthNames[dateOfDay.getMonth() + 1] + " " + convert24to12(dateOfDay.getHours());
+			var weatherDayLayout = makeWeatherDayLayout(formatedDateOfDay, arr[i].weather[0].icon, arr[i].main.temp);
+			div.appendChild(weatherDayLayout);
+		}
+	}
+	function convert24to12(hours) {
+		if(hours > 12) {
+			return hours - 12 + "p.m";
+		} 
+		if(hours == 0) {
+			return hours + 12 + "a.m";
+		}
+		return hours + "a.m";
+	}
+	function makeWeatherTodayLayout(resp) {
+		var cityElement = document.querySelector(".location_time h3");
+		cityElement.textContent = resp.city.name + ", " + resp.city.country;
+		var timeElement = document.querySelector(".location_time p");
+		var dateOfDay = new Date(resp.list[0].dt_txt);
+		var formatedDateOfDay = dateOfDay.getHours() + ":" + dateOfDay.getMinutes() + "0";
+		timeElement.textContent = formatedDateOfDay;
+		var tempElement = document.querySelector(".weather_today span:first-child");
+		tempElement.textContent = Math.round(resp.list[0].main.temp) + "℃";
+		var weatherDescriptionElement = document.querySelector(".weather_today span:last-child");
+		weatherDescriptionElement.textContent = resp.list[0].weather[0].description;
+		var windDirectionElement = document.querySelector(".wind span:first-child");
+		windDirectionElement.textContent = resp.list[0].wind.deg + " deg";
+		var windSpeedElement = document.querySelector(".wind span:last-child");
+		windSpeedElement.textContent = Math.round(resp.list[0].wind.speed) + " m/s";
+	}
+
+	getWeather(weatherUrl);
+	
+ 	</script>
+
+ </body>
+ </html>

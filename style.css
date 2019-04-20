@@ -1,0 +1,48 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Dosis', sans-serif;
+	font-size: 24px;
+}
+.container {
+	max-width: 500px;
+	margin: 0 auto;
+}
+.main {
+	height: 400px;
+	background-color: #90EE90;
+	color: white;
+}
+.location_time h3 {
+	padding: 5px 10px;
+}
+.location_time p {
+	padding: 0 10px;
+}
+.weather_today {
+	width: 120px;
+	margin: 90px auto;
+	display: flex;
+	flex-flow: column;
+	text-align: center;
+}
+.weather_today span:first-child {
+	font-size: 50px;
+}
+.weather_today span:last-child {
+	font-size: 24px;
+}
+.wind {
+	display: flex;
+	justify-content: space-around;
+	font-size: 20px;
+}
+.each_note {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 10px;
+	border-bottom: 1px solid grey;
+	font-size: 20px;
+}
